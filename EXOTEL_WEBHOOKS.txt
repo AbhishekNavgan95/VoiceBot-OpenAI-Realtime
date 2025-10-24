@@ -1,0 +1,84 @@
+====================================================
+EXOTEL WEBHOOK CONFIGURATION
+====================================================
+
+Configure these URLs in your Exotel Dashboard:
+
+----------------------------------------------------
+1. INCOMING CALL APPLET (Required)
+----------------------------------------------------
+URL: https://your-domain.ngrok.io/exotel/incoming-call
+Method: POST
+Description: Main handler for incoming calls
+
+----------------------------------------------------
+2. CALL STATUS CALLBACK (Required)
+----------------------------------------------------
+URL: https://your-domain.ngrok.io/exotel/call-status
+Method: POST
+Description: Receives call status updates
+
+----------------------------------------------------
+3. WEBSOCKET ENDPOINT (Automatic)
+----------------------------------------------------
+URL: wss://your-domain.ngrok.io/exotel-media-stream
+Protocol: WebSocket
+Description: Real-time audio streaming
+
+----------------------------------------------------
+4. EMERGENCY TRANSFER (Optional)
+----------------------------------------------------
+URL: https://your-domain.ngrok.io/exotel/emergency-transfer
+Method: POST
+Description: Handles emergency call transfers
+
+----------------------------------------------------
+5. OPERATOR TRANSFER (Optional)
+----------------------------------------------------
+URL: https://your-domain.ngrok.io/exotel/transfer-call
+Method: POST
+Description: Transfers to operators/departments
+
+----------------------------------------------------
+6. FALLBACK (Optional)
+----------------------------------------------------
+URL: https://your-domain.ngrok.io/exotel/fallback
+Method: POST
+Description: Error handling fallback
+
+----------------------------------------------------
+7. HEALTH CHECK
+----------------------------------------------------
+URL: https://your-domain.ngrok.io/exotel/health
+Method: GET
+Description: Service health status
+
+====================================================
+SETUP STEPS
+====================================================
+
+1. Start your server:
+   npm run dev
+
+2. Start ngrok (in separate terminal):
+   ngrok http 8000
+
+3. Copy the HTTPS URL from ngrok
+   Example: https://abc123.ngrok.io
+
+4. Replace "your-domain.ngrok.io" in URLs above
+   with your actual ngrok URL
+
+5. In Exotel Dashboard:
+   - Go to: Numbers → Your Virtual Number
+   - Set Applet URL to: /exotel/incoming-call
+   - Set StatusCallback to: /exotel/call-status
+
+6. Update .env file:
+   PUBLIC_URL=https://abc123.ngrok.io
+
+7. Restart server
+
+8. Test by calling your Exotel number!
+
+====================================================
