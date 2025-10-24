@@ -46,7 +46,7 @@ app.use(helmet({
 
 // CORS configuration
 const corsOptions = {
-    origin: process.env.CORS_ORIGINS?.split(',') || '*',
+    origin: '*',
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'ngrok-skip-browser-warning'],
