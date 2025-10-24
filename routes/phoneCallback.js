@@ -55,12 +55,16 @@ router.post('/initiate-call', async (req, res) => {
         logger.info(`Webhook URLs - incoming: ${webhookUrl}, status: ${statusCallbackUrl}`);
 
         // Initiate call using Exotel API
-        const exotelUrl = `https://${EXOTEL_API_KEY}:${EXOTEL_API_TOKEN}@api.exotel.com/v1/Accounts/${EXOTEL_SID}/Calls/connect.json`;
+        const exotelUrl = `https://api.exotel.com/v1/Accounts/${EXOTEL_SID}/Calls/connect.json`;
+
+        // Create Basic Auth header
+        const authString = Buffer.from(`${EXOTEL_API_KEY}:${EXOTEL_API_TOKEN}`).toString('base64');
 
         const response = await fetch(exotelUrl, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': `Basic ${authString}`
             },
             body: new URLSearchParams({
                 From: EXOTEL_PHONE_NUMBER,
@@ -96,6 +100,7 @@ router.post('/initiate-call', async (req, res) => {
         });
 
         logger.info(`Exotel call initiated: ${callSid} to ${phone_number}`);
+        console.log("result", result);
 
         res.json({
             success: true,
@@ -129,9 +134,16 @@ router.get('/call-status/:call_sid', async (req, res) => {
         const cachedCall = activeCalls.get(call_sid);
 
         // Fetch from Exotel
-        const exotelUrl = `https://${EXOTEL_API_KEY}:${EXOTEL_API_TOKEN}@api.exotel.com/v1/Accounts/${EXOTEL_SID}/Calls/${call_sid}.json`;
+        const exotelUrl = `https://api.exotel.com/v1/Accounts/${EXOTEL_SID}/Calls/${call_sid}.json`;
 
-        const response = await fetch(exotelUrl);
+        // Create Basic Auth header
+        const authString = Buffer.from(`${EXOTEL_API_KEY}:${EXOTEL_API_TOKEN}`).toString('base64');
+
+        const response = await fetch(exotelUrl, {
+            headers: {
+                'Authorization': `Basic ${authString}`
+            }
+        });
 
         if (!response.ok) {
             throw new Error(`Exotel API error: ${response.status}`);
@@ -181,12 +193,16 @@ router.post('/cancel-call', async (req, res) => {
         logger.info(`Cancelling Exotel call: ${call_sid}`);
 
         // Hangup call using Exotel API
-        const exotelUrl = `https://${EXOTEL_API_KEY}:${EXOTEL_API_TOKEN}@api.exotel.com/v1/Accounts/${EXOTEL_SID}/Calls/${call_sid}`;
+        const exotelUrl = `https://api.exotel.com/v1/Accounts/${EXOTEL_SID}/Calls/${call_sid}`;
+
+        // Create Basic Auth header
+        const authString = Buffer.from(`${EXOTEL_API_KEY}:${EXOTEL_API_TOKEN}`).toString('base64');
 
         const response = await fetch(exotelUrl, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': `Basic ${authString}`
             },
             body: new URLSearchParams({
                 Status: 'completed'
